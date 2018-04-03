@@ -56,7 +56,6 @@ public class EvaluateListByTopic {
         }
 
         evaluations.put("crdc",new Evaluation());
-        LibrairyClient librAIryClient = new LibrairyClient("http://lab2.librairy.linkeddata.es");
 
 
         for (int i=0;i<SAMPLE_SIZE;i++){
@@ -74,9 +73,6 @@ public class EvaluateListByTopic {
 
                 evaluations.get(algorithm.getName()).addResult(goldStandard, similarList);
             }
-
-//            List<String> similarList = librAIryClient.getRelatedByVector(sample.getShape(), SIMILAR_SIZE, false).getNeighbours().stream().map(rel -> rel.getId()).collect(Collectors.toList());
-//            evaluations.get("crdc").addResult(goldStandard, similarList);
 
         }
 
