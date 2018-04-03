@@ -1,0 +1,243 @@
+<!--
+  ~ Copyright (c) 2018. Universidad Politecnica de Madrid
+  ~
+  ~ @author Badenes-Olmedo, Carlos <cbadenes@fi.upm.es>
+  ~
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+ 
+  <groupId>org.librairy</groupId>
+  <artifactId>solr-field-types</artifactId>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+  <name>solr-field-types</name>
+  
+  <prerequisites>
+   <maven>3.0.0</maven>
+  </prerequisites>
+  
+  <properties>
+	  <!-- Project Details -->
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <project.java.version>1.8</project.java.version>
+	  <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+	  <!-- Maven Plugins -->
+	  <maven.appassembler.plugin.version>1.9</maven.appassembler.plugin.version>
+	  <maven.assembly.plugin.version>2.5.5</maven.assembly.plugin.version>
+	  <maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
+	  <maven.jar.plugin.version>2.6</maven.jar.plugin.version>
+	  <maven.site.plugin.version>0.10</maven.site.plugin.version>
+	  <maven.scala.version>2.15.2</maven.scala.version>
+	  <maven.surefire.plugin.version>2.11</maven.surefire.plugin.version>
+	  <maven.war.plugin.version>2.6</maven.war.plugin.version>
+	  <maven.resources.plugin.version>2.7</maven.resources.plugin.version>
+	  <surefire.junit.version>2.12</surefire.junit.version>
+
+	  <!-- Project Dependencies -->
+	  <commons-lang3.version>3.5</commons-lang3.version>
+	  <librairy.space.version>[1.0,)</librairy.space.version>
+	  <mallet.version>2.0.8</mallet.version>
+	  <solr.version>7.2.1</solr.version>
+	  <junit.version>4.12</junit.version>
+	  <logback.version>1.1.3</logback.version>
+	  <unirest.version>1.4.9</unirest.version>
+  </properties>
+  
+	  <dependencyManagement>
+		  <dependencies>
+
+			  <!-- Solr Libraries -->
+			  <dependency>
+				  <groupId>org.apache.solr</groupId>
+				  <artifactId>solr-core</artifactId>
+				  <version>${solr.version}</version>
+			  </dependency>
+
+			  <dependency>
+				  <groupId>org.apache.solr</groupId>
+				  <artifactId>solr-solrj</artifactId>
+				  <version>${solr.version}</version>
+			  </dependency>
+
+			  <!-- Http Libraries -->
+			  <dependency>
+				  <groupId>com.mashape.unirest</groupId>
+				  <artifactId>unirest-java</artifactId>
+				  <version>${unirest.version}</version>
+			  </dependency>
+
+			  <dependency>
+				  <groupId>org.librairy</groupId>
+				  <artifactId>space-service-facade</artifactId>
+				  <version>${librairy.space.version}</version>
+			  </dependency>
+
+			  <!-- Mallet -->
+			  <dependency>
+				  <groupId>cc.mallet</groupId>
+				  <artifactId>mallet</artifactId>
+				  <version>${mallet.version}</version>
+			  </dependency>
+
+			  <!-- Log Libraries -->
+			  <dependency>
+				  <groupId>ch.qos.logback</groupId>
+				  <artifactId>logback-classic</artifactId>
+				  <version>${logback.version}</version>
+			  </dependency>
+			  <dependency>
+				  <groupId>ch.qos.logback</groupId>
+				  <artifactId>logback-core</artifactId>
+				  <version>${logback.version}</version>
+			  </dependency>
+
+			  <dependency>
+				  <groupId>org.apache.commons</groupId>
+				  <artifactId>commons-lang3</artifactId>
+				  <version>${commons-lang3.version}</version>
+			  </dependency>
+
+			  <!-- Unit tests Libraries -->
+			  <dependency>
+				  <groupId>junit</groupId>
+				  <artifactId>junit</artifactId>
+				  <version>${junit.version}</version>
+			  </dependency>			  
+
+		  </dependencies>
+	  </dependencyManagement>
+
+	  <dependencies>
+
+		  <!-- Solr Libraries -->
+		  <dependency>
+			  <groupId>org.apache.solr</groupId>
+			  <artifactId>solr-core</artifactId>
+		  </dependency>
+		  <dependency>
+			  <groupId>org.apache.solr</groupId>
+			  <artifactId>solr-solrj</artifactId>
+		  </dependency>
+
+		  <!-- Mallet -->
+		  <dependency>
+			  <groupId>cc.mallet</groupId>
+			  <artifactId>mallet</artifactId>
+		  </dependency>
+
+		  <!-- Http Libraries -->
+		  <dependency>
+			  <groupId>com.mashape.unirest</groupId>
+			  <artifactId>unirest-java</artifactId>
+		  </dependency>
+
+		  <dependency>
+			  <groupId>org.librairy</groupId>
+			  <artifactId>space-service-facade</artifactId>
+		  </dependency>
+
+		  <!-- Unit tests -->
+		  <dependency>
+			  <groupId>junit</groupId>
+			  <artifactId>junit</artifactId>
+			  <scope>test</scope>
+		  </dependency>
+		 
+		  <!-- Logging -->
+		  <dependency>
+			  <groupId>ch.qos.logback</groupId>
+			  <artifactId>logback-classic</artifactId>
+		  </dependency>
+		  <dependency>
+			  <groupId>ch.qos.logback</groupId>
+			  <artifactId>logback-core</artifactId>
+		  </dependency>
+
+	  </dependencies>
+
+	  <build>
+		  <resources>
+			  <resource>
+		  		  <directory>src/main/bin</directory>
+			  </resource>
+			  <resource>
+				  <directory>src/main/resources</directory>
+			  </resource>
+		  </resources>
+		  <finalName>${project.artifactId}</finalName>
+		  <plugins>
+
+			  <!-- Maven Compiler Plugin -->
+			  <plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-compiler-plugin</artifactId>
+				  <version>${maven.compiler.plugin.version}</version>
+				  <configuration>
+					  <encoding>${project.build.sourceEncoding}</encoding>
+					  <source>${project.java.version}</source>
+					  <target>${project.java.version}</target>
+					  <compilerVersion>${project.java.version}</compilerVersion>
+				  </configuration>
+			  </plugin>
+
+			  <!-- Maven Test Plugin -->
+			  <plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-surefire-plugin</artifactId>
+				  <version>2.11</version>
+				  <configuration>
+					  <excludes>
+						  <exclude>%regex[.*IntTest.*]</exclude>
+					  </excludes>
+				  </configuration>
+			  </plugin>
+
+			  <!-- Github Deploy -->
+			              <plugin>
+			                  <artifactId>maven-deploy-plugin</artifactId>
+			                  <version>2.8.1</version>
+			                  <configuration>
+			                      <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+			                  </configuration>
+			              </plugin>
+			              <plugin>
+			                  <groupId>org.apache.maven.plugins</groupId>
+			                  <artifactId>maven-site-plugin</artifactId>
+			                  <version>3.3</version>
+			                  <configuration>
+			                      <skipDeploy>true</skipDeploy>
+			                  </configuration>
+			              </plugin>
+			              <plugin>
+			                  <groupId>com.github.github</groupId>
+			                  <artifactId>site-maven-plugin</artifactId>
+			                  <version>0.12</version>
+			                  <executions>
+			                      <execution>
+			                          <id>jar-deploy</id>
+			                          <goals>
+			                              <goal>site</goal>
+			                          </goals>
+			                          <phase>deploy</phase>
+			                          <configuration>
+			                              <message>Library of ${project.version}</message>
+			                              <noJekyll>true</noJekyll>
+			                              <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+			                              <branch>refs/heads/mvn-repo</branch>
+			                              <includes><include>**/*</include></includes>
+			                              <merge>true</merge>
+			                              <repositoryName>${project.artifactId}</repositoryName>
+			                              <repositoryOwner>librairy</repositoryOwner>
+			                              <server>github</server>
+			                          </configuration>
+			                      </execution>
+			                  </executions>
+			              </plugin>
+
+		  </plugins>
+	  </build>
+
+  </project>
