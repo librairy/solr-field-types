@@ -61,7 +61,6 @@ public class QueryTest {
 
         Query query = createTestQuery();
         searcher.search(query, maxdocs);
-
         Assert.assertTrue(true);
     }
 
