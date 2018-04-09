@@ -1,5 +1,7 @@
 package org.librairy.solr.metric;
 
+import cc.mallet.util.Maths;
+import com.google.common.primitives.Doubles;
 import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.NumericDocValues;
@@ -13,6 +15,7 @@ import org.apache.lucene.util.SmallFloat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -62,5 +65,10 @@ public class JSDSimilarity extends Similarity {
     @Override
     public SimScorer simScorer(SimWeight simWeight, LeafReaderContext leafReaderContext) throws IOException {
         return null;
+    }
+
+
+    public static Double btw(List<Double> v1, List<Double> v2){
+        return 1 - Maths.jensenShannonDivergence(Doubles.toArray(v1), Doubles.toArray(v2));
     }
 }
