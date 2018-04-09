@@ -1,6 +1,5 @@
-package org.librairy.solr.evaluations;
+package org.librairy.solr.evaluations.accuracy;
 
-import org.apache.lucene.index.IndexReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

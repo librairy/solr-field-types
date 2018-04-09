@@ -1,4 +1,4 @@
-package org.librairy.solr.evaluations;
+package org.librairy.solr.evaluations.time;
 
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;

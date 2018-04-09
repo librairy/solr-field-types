@@ -1,4 +1,4 @@
-package org.librairy.solr.evaluations;
+package org.librairy.solr.evaluations.time;
 
 import org.junit.Rule;
 import org.librairy.solr.TestCasePrinterRule;
