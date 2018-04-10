@@ -22,8 +22,9 @@ public class IndexFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexFactory.class);
 
-    public static final String FIELD_NAME   = "doctopics_field";
-    public static final float PRECISION    = 1e4f;
+    public static final String DOC_ID           = "id";
+    public static final String FIELD_NAME       = "doctopics_field";
+    public static final float PRECISION         = 1e4f;
 
     public static IndexReader newTopicIndex(Directory directory, String corpus) throws IOException {
         IndexWriter writer = createIndexWriter(directory);

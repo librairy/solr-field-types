@@ -22,4 +22,25 @@ public class DocumentFactory {
         return testDoc;
     }
 
+
+    public static Document newDocId(String id, String topics) {
+        org.apache.lucene.document.Document luceneDoc = new org.apache.lucene.document.Document();
+        // id
+        luceneDoc.add(new TextField(IndexFactory.DOC_ID, id, Field.Store.YES));
+
+        // doc-topic
+        FieldType fieldType = new FieldType(TextField.TYPE_STORED);//TYPE_NOT_STORED
+        fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+        fieldType.setStoreTermVectorPositions(false);
+        fieldType.setStoreTermVectorOffsets(false);
+        fieldType.setStoreTermVectors(true);
+
+        Field textField = new Field(IndexFactory.FIELD_NAME, topics, fieldType);
+        luceneDoc.add(textField);
+
+
+        return luceneDoc;
+    }
+
+
 }

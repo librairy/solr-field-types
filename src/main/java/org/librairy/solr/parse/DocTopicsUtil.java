@@ -1,5 +1,7 @@
 package org.librairy.solr.parse;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,12 +11,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 import static java.util.stream.Collectors.*;
@@ -181,7 +178,7 @@ public class DocTopicsUtil {
         return 0;
     }
 
-    public String getVectorString(float[] topic_vector, float multiplication_factor) {
+    public static String getVectorString(float[] topic_vector, float multiplication_factor) {
         String result = "";
         for(int i=0; i<topic_vector.length;i++){
             if((int)(topic_vector[i]*multiplication_factor) > 0){
@@ -189,6 +186,58 @@ public class DocTopicsUtil {
             }
         }
         return result;
+    }
+
+    public static String getVectorString(List<Double> topic_vector, float multiplication_factor) {
+        String result = "";
+        for(int i=0; i<topic_vector.size();i++){
+            int freq = (int) (topic_vector.get(i) * multiplication_factor);
+            if(freq > 0){
+                result += i + "|" + freq + " ";
+            }
+        }
+        return result;
+    }
+
+    public static String getVectorString(List<Double> topic_vector, float multiplication_factor, float epsylon) {
+        String result = "";
+        for(int i=0; i<topic_vector.size();i++){
+            int freq = (int) (topic_vector.get(i) * multiplication_factor);
+            if(freq > (epsylon*multiplication_factor)){
+                result += i + "|" + freq + " ";
+            }
+        }
+        return result;
+    }
+
+    public static List<Double> getVectorFromString(String topic_vector, float multiplication_factor, int size) {
+
+        String[] topics = topic_vector.split(" ");
+
+        Double[] vector = new Double[size];
+        Arrays.fill(vector,0.0);
+        for(int i=0; i<topics.length;i++){
+            int id      = Integer.valueOf(StringUtils.substringBefore(topics[i],"|"));
+            int freq    = Integer.valueOf(StringUtils.substringAfter(topics[i],"|"));
+            Double score = Double.valueOf(freq) / Double.valueOf(multiplication_factor);
+            vector[id] = score;
+        }
+        return Arrays.asList(vector);
+    }
+
+    public static List<Double> getVectorFromString(String topic_vector, float multiplication_factor, int size, float epsylon) {
+
+        String[] topics = topic_vector.split(" ");
+
+        Double[] vector = new Double[size];
+        Arrays.fill(vector,(double)epsylon);
+        for(int i=0; i<topics.length;i++){
+            int id      = Integer.valueOf(StringUtils.substringBefore(topics[i],"|"));
+            int freq    = Integer.valueOf(StringUtils.substringAfter(topics[i],"|"));
+            Double score = Double.valueOf(freq) / Double.valueOf(multiplication_factor);
+            vector[id] = score;
+        }
+        return Arrays.asList(vector);
     }
 
     public String getVectorStringfromMap(Map<Integer, Integer> termVector) {
