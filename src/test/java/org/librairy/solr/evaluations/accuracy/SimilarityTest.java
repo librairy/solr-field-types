@@ -12,6 +12,7 @@ import org.junit.runner.Description;
 import org.librairy.solr.evaluations.model.RepresentationalAlgorithm;
 import org.librairy.solr.factories.EvaluationFactory;
 import org.librairy.solr.metric.TermFreqSimilarity;
+import org.librairy.solr.parse.CRDCClustering;
 import org.librairy.solr.parse.DocTopicsUtil;
 
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class SimilarityTest {
 
         int numTopics   = 120;
         float precision = 1e4f;
-        float epsylon = 0.12f;
+        float epsylon = 0.01f;
         float epsylon_2_2sqrt = (float) (2*Math.sqrt(2*epsylon));
         float epsylon_2_2sqrt_short = (float) (epsylon_2_2sqrt*precision);
         float epsylon_cota2_2 = (float) (Math.sqrt((-72f + 24f*Math.sqrt(9+2*epsylon)))*precision);
@@ -150,7 +151,7 @@ public class SimilarityTest {
 
         int numTopics   = 120;
         float precision = 1e4f;
-        float epsylon = 0.12f;
+        float epsylon   = 0.12f;
 
         // evaluate index
         evaluationFactory.newFrom(new RepresentationalAlgorithm() {
@@ -172,6 +173,37 @@ public class SimilarityTest {
             @Override
             public Similarity similarity() {
                 return new TermFreqSimilarity();
+            }
+        });
+    }
+
+    @Test
+    public void crdc() throws IOException {
+
+        double threshold    = 0.95;
+        int numTopics       = 120;
+        int multiplier      = 10000;
+
+        // evaluate index
+        evaluationFactory.newFrom(new RepresentationalAlgorithm() {
+            @Override
+            public String representationOf(List<Double> topicDistributions) {
+                return CRDCClustering.getLabel(topicDistributions,threshold,multiplier);
+            }
+
+            @Override
+            public List<Double> shapeFrom(String topicRepresentation) {
+                return CRDCClustering.getVector(topicRepresentation, numTopics,multiplier);
+            }
+
+            @Override
+            public String id() {
+                return testName.getMethodName();
+            }
+
+            @Override
+            public Similarity similarity() {
+                return new BooleanSimilarity();
             }
         });
     }
