@@ -3,6 +3,7 @@ package org.librairy.solr;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
@@ -19,10 +20,14 @@ import java.util.stream.Collectors;
  */
 public class SolrClient {
 
-    private final HttpSolrClient server;
+    private final org.apache.solr.client.solrj.SolrClient server;
 
-    public SolrClient(String endpoint) {
-        server = new HttpSolrClient.Builder(endpoint).build();
+    public SolrClient(String endpoint, String collection) {
+//        server = new HttpSolrClient.Builder(endpoint).build();
+
+        CloudSolrClient serverCloud = new CloudSolrClient.Builder().withZkHost(endpoint).build();
+        serverCloud.setDefaultCollection(collection);
+        server = serverCloud;
     }
 
 
@@ -109,7 +114,9 @@ public class SolrClient {
     public static void main(String[] args) throws IOException, SolrServerException {
 
 
-        SolrClient client = new SolrClient("http://localhost:8983/solr/tw-tfidf");
+        String cloudEndpoint = "http://localhost:9983";
+
+        SolrClient client = new SolrClient("http://localhost:8983/solr","tw-tfidf");
 
 
         List<String> result = client.getMoreLikeThis("5227dcc6bfbe38d7288b6980", 10);
