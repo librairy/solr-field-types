@@ -104,7 +104,7 @@ public class QueryTest {
         IndexSearcher searcher = new IndexSearcher(reader);
         searcher.setSimilarity(new BooleanSimilarity());//new LMDirichletSimilarity((float) 1)
         int num_cercanos = getJS_distances_inverted_index(reader, searcher, createTestQuery(), testQueryDoctopics);
-        LOG.info("Num docs sim by JS similarity using lucene inverted index : "+ num_cercanos);
+        LOG.info("Num docs sim by JS similarityMetric using lucene inverted index : "+ num_cercanos);
 
     }
 
@@ -114,7 +114,7 @@ public class QueryTest {
         IndexSearcher searcher = new IndexSearcher(reader);
         HashMap<Integer, Map<Integer,Integer>> termVectorsMap = getTermVectorsMap(maxdocs, reader);
         int num_cercanos = getJS_distances_inverted_index_termvectorsmap(reader, searcher, createTestQuery(), testQueryDoctopics, termVectorsMap);
-        LOG.info("Num docs sim by JS similarity using lucene inverted index with termvectors : "+ num_cercanos);
+        LOG.info("Num docs sim by JS similarityMetric using lucene inverted index with termvectors : "+ num_cercanos);
     }
 
 
@@ -130,7 +130,7 @@ public class QueryTest {
         double maxsim = 0d;
         double minsim = 1e6d;
 
-        LOG.info("5. Query index JS similarity using lucene inverted index with termvectors scoring: ");
+        LOG.info("5. Query index JS similarityMetric using lucene inverted index with termvectors scoring: ");
         float score_ant = 12f;
 
         // solo score > 0
@@ -345,7 +345,7 @@ public class QueryTest {
         double maxsim = 0d;
         double minsim = 1e6d;
 
-        LOG.info("4. Query index JS similarity using lucene inverted index scoring: ");
+        LOG.info("4. Query index JS similarityMetric using lucene inverted index scoring: ");
         float score_ant = 12f;
 
         // solo score > 0

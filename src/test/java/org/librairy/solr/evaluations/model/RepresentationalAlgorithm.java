@@ -15,5 +15,8 @@ public interface RepresentationalAlgorithm {
 
     String id();
 
-    Similarity similarity();
+    Similarity similarityMetric();
+
+    Double similarityScore(List<Double> v1, List<Double> v2);
+
 }

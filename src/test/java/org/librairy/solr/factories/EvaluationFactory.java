@@ -69,6 +69,7 @@ public class EvaluationFactory {
 
         LOG.info("loading documents from corpus");
         List<Document> documents = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger();
         while ((line = reader.readLine()) != null) {
             // comment line
             if(line.trim().startsWith("#")){
@@ -84,6 +85,7 @@ public class EvaluationFactory {
             document.setId(id);
             document.setShape(shape);
             documents.add(document);
+//            if (counter.getAndIncrement() == 1000) break;
         }
         reader.close();
 
@@ -129,7 +131,7 @@ public class EvaluationFactory {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            // comment line
+
             if(line.trim().startsWith("#")){
                 continue;
             }
@@ -146,6 +148,7 @@ public class EvaluationFactory {
             writer.addDocument(luceneDoc);
             if (counter.getAndIncrement() % 500 == 0) writer.commit();
 
+//            if (counter.get() == 1000) break;
         }
         bufferedReader.close();
 
@@ -157,7 +160,7 @@ public class EvaluationFactory {
 
         IndexReader reader      = DirectoryReader.open(directory);
         IndexSearcher searcher  = new IndexSearcher(reader);
-        searcher.setSimilarity(algorithm.similarity());//new BooleanSimilarity() //new LMDirichletSimilarity((float) 1)
+        searcher.setSimilarity(algorithm.similarityMetric());//new BooleanSimilarity() //new LMDirichletSimilarity((float) 1)
 
 
 
@@ -171,13 +174,15 @@ public class EvaluationFactory {
         start = System.currentTimeMillis();
         Double matchedDocs = 0.0;
         counter = new AtomicInteger(1);
-
+        List<Double> totalHits = new ArrayList<>();
         for(Document d1 : sample){
 
             if ((sampleSize >= 10) && (counter.getAndIncrement() % (sampleSize/10) == 0 )) LOG.info(counter.get()-1 + "/" + sampleSize + " docs evaluated");
 
 
             try {
+
+                List<Double> d1Shape = algorithm.shapeFrom(algorithm.representationOf(d1.getShape()));
                 // prepare query
                 QueryParser parser = new QueryParser(IndexFactory.FIELD_NAME, new TopicAnalyzer());
                 String queryString = algorithm.representationOf(d1.getShape());
@@ -186,6 +191,7 @@ public class EvaluationFactory {
                 TopDocs results = searcher.search(query, maxSize);
 
                 matchedDocs += results.totalHits;
+                totalHits.add(Double.valueOf(results.totalHits));
 
                 List<String> simDocs = Arrays.stream(results.scoreDocs).parallel().map(sd -> {
                     try {
@@ -195,7 +201,8 @@ public class EvaluationFactory {
                         Document d2 = new Document();
                         d2.setId(String.format(docIndexed.get(IndexFactory.DOC_ID)));
                         d2.setShape(algorithm.shapeFrom(String.format(docIndexed.get(IndexFactory.FIELD_NAME))));
-                        return new Score(JSDSimilarity.btw(d1.getShape(), d2.getShape()), d1, d2);
+                        Score score = new Score(algorithm.similarityScore(d1Shape, d2.getShape()), d1, d2);
+                        return score;
                     } catch (IOException e) {
                         e.printStackTrace();
                         return new Score(Double.MIN_VALUE, null, null);
@@ -255,10 +262,17 @@ public class EvaluationFactory {
         double ratioMatchedDocs = 100.0 * (avgMatchedDocs / reader.numDocs());
         LOG.info("\t - query matched docs (avg): " + formatter.format(avgMatchedDocs) + " ("+formatter.format(ratioMatchedDocs)+"%)");
 
-        LOG.info("\t - query similarity: " + searcher.getSimilarity(true).getClass().getName());
+        LOG.info("\t - query matched docs (stats): " + new Stats(totalHits));
+
+        LOG.info("\t - query similarityMetric: " + searcher.getSimilarity(true).getClass().getName());
 
         // accuracy
         LOG.info("\t - evaluation@"+numSimilarDocs+": " + evaluation);
         LOG.info("\t - evaluation@10: " + evaluationAt10);
+    }
+
+
+    public String getCorpusPath() {
+        return corpusPath;
     }
 }

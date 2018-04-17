@@ -249,7 +249,7 @@ public class DocTopicsUtil {
         return result;
     }
 
-    public String getVectorStringfromMapReduced(Map<Integer, Integer> termVector, float epsylon_cota2_2) {
+    public static String getVectorStringfromMapReduced(Map<Integer, Integer> termVector, float epsylon_cota2_2) {
         String result = "";
 
         Map<Integer, Integer> resultTermVector = new HashMap<Integer, Integer>();

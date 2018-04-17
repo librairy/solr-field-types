@@ -220,7 +220,7 @@ public class DocTopicsLuceneIndexTest {
             //System.out.println("Results for querystring, count: " + results.totalHits);
 
             fin = System.currentTimeMillis();
-            System.out.println("\n1. Query index lucene default similarity (ms): " + (fin - ini));
+            System.out.println("\n1. Query index lucene default similarityMetric (ms): " + (fin - ini));
 
             // show results
             ScoreDoc[] resultDocs = results.scoreDocs;
@@ -236,13 +236,13 @@ public class DocTopicsLuceneIndexTest {
             ini = System.currentTimeMillis();
             getJS_distances(reader, testQueryDoctopics);
             fin = System.currentTimeMillis();
-            System.out.println("\n2. Query index JS similarity (ms): " + (fin - ini));
+            System.out.println("\n2. Query index JS similarityMetric (ms): " + (fin - ini));
 
             // query3: cosine distance
             ini = System.currentTimeMillis();
             getCosine_distances(reader, testQueryDoctopics);
             fin = System.currentTimeMillis();
-            System.out.println("\n3. Query index cosine similarity (ms): " + (fin - ini));
+            System.out.println("\n3. Query index cosine similarityMetric (ms): " + (fin - ini));
 
             // query4: JS divergence using inverted index
             // TODO test other lucene similarities
@@ -250,7 +250,7 @@ public class DocTopicsLuceneIndexTest {
             ini = System.currentTimeMillis();
             int num_cercanos = getJS_distances_inverted_index(reader, searcher, query, testQueryDoctopics);
             fin = System.currentTimeMillis();
-            System.out.println("\n4. Query index JS similarity using lucene inverted index (ms): " + (fin - ini));
+            System.out.println("\n4. Query index JS similarityMetric using lucene inverted index (ms): " + (fin - ini));
             System.out.println("Num docs cercanos: "+ num_cercanos);
 
 
@@ -266,7 +266,7 @@ public class DocTopicsLuceneIndexTest {
             ini = System.currentTimeMillis();
             num_cercanos = getJS_distances_inverted_index_termvectorsmap(reader, searcher, query, testQueryDoctopics, termVectorsMap);
             fin = System.currentTimeMillis();
-            System.out.println("\n5. Query index JS similarity using lucene inverted index with termvectors (ms): " + (fin - ini));
+            System.out.println("\n5. Query index JS similarityMetric using lucene inverted index with termvectors (ms): " + (fin - ini));
             System.out.println("Num docs cercanos: "+ num_cercanos);
 
             int num_samples = 1000;
@@ -283,7 +283,7 @@ public class DocTopicsLuceneIndexTest {
                 mean_num_cercanos = (mean_num_cercanos*(i-1) + num_cercanos)/i;
                 total_time += fin-ini;
             }
-            System.out.println("\n6. Query Stats: index JS similarity using lucene inverted index with termvectors (ms): " + total_time + ", num_samples: " + num_samples + ", mean_time (ms): " + mean_time + ", mean_num_cercanos: " + mean_num_cercanos);
+            System.out.println("\n6. Query Stats: index JS similarityMetric using lucene inverted index with termvectors (ms): " + total_time + ", num_samples: " + num_samples + ", mean_time (ms): " + mean_time + ", mean_num_cercanos: " + mean_num_cercanos);
 
 
         } catch (IOException e) {
@@ -355,7 +355,7 @@ public class DocTopicsLuceneIndexTest {
         double maxsim = 0d;
         double minsim = 1e6d;
 
-        System.out.println("\n5. Query index JS similarity using lucene inverted index with termvectors scoring: ");
+        System.out.println("\n5. Query index JS similarityMetric using lucene inverted index with termvectors scoring: ");
         float score_ant = 12f;
 
         // solo score > 0
@@ -410,7 +410,7 @@ public class DocTopicsLuceneIndexTest {
         double maxsim = 0d;
         double minsim = 1e6d;
 
-        System.out.println("\n4. Query index JS similarity using lucene inverted index scoring: ");
+        System.out.println("\n4. Query index JS similarityMetric using lucene inverted index scoring: ");
         float score_ant = 12f;
 
         // solo score > 0
