@@ -1,4 +1,4 @@
-package org.librairy.solr.evaluations.model;
+package org.librairy.solr.model;
 
 import org.apache.lucene.search.similarities.Similarity;
 
