@@ -1,2 +1,2 @@
 # solr-field-types
-Own data types oriented to librAIry services
+Study of approaches to integrate probabilistic topic models in Solr
