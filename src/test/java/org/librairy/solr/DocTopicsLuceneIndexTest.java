@@ -1,4 +1,4 @@
-package org.librairy.solr.evaluations;
+package org.librairy.solr;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;

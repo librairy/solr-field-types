@@ -12,7 +12,6 @@ import com.jujutsu.utils.TSneUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.LMDirichletSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
@@ -22,10 +21,11 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-import org.librairy.solr.evaluations.model.RepresentationalAlgorithm;
 import org.librairy.solr.factories.EvaluationFactory;
 import org.librairy.solr.metric.JSDSimilarity;
+import org.librairy.solr.metric.MetricsUtils;
 import org.librairy.solr.metric.TermFreqSimilarity;
+import org.librairy.solr.model.RepresentationalAlgorithm;
 import org.librairy.solr.parse.CRDCClustering;
 import org.librairy.solr.parse.DocTopicsUtil;
 import org.slf4j.Logger;
@@ -266,6 +266,76 @@ public class SimilarityTest {
             @Override
             public Double similarityScore(List<Double> v1, List<Double> v2) {
                 return JSDSimilarity.btw(v1, v2);
+            }
+        });
+    }
+
+    @Test
+    public void docTopicsLucene2SimilarityGraphArray() throws IOException {
+
+        int numTopics   = 120;
+        float precision = 1e4f;
+        float epsylon = 0.15f;
+        float epsylon_2_2sqrt = (float) (2*Math.sqrt(2*epsylon));
+        float epsylon_2_2sqrt_short = (float) (epsylon_2_2sqrt*10000);
+        float epsylon_cota2_2 = (float) (Math.sqrt((-72f + 24f*Math.sqrt(9+2*epsylon)))*10000);
+        float epsylon20000f = epsylon*20000f;
+
+
+        AtomicInteger nullShapes = new AtomicInteger(1);
+        // evaluate index
+        evaluationFactory.newFrom(new RepresentationalAlgorithm() {
+            @Override
+            public String representationOf(List<Double> topicDistributions) {
+                String termVectorString = DocTopicsUtil.getVectorString(topicDistributions, precision, epsylon);
+                try{
+                    Map<Integer,Integer> termVector = new HashMap<>();
+                    String[] topics = termVectorString.split(" ");
+                    for (int i=0; i< topics.length; i++){
+                        Integer topicId = Integer.valueOf(StringUtils.substringBefore(topics[i], "|"));
+                        Integer topicValue = Integer.valueOf(StringUtils.substringAfter(topics[i], "|"));
+                        termVector.put(topicId,topicValue);
+                    }
+                    return DocTopicsUtil.getVectorStringfromMapReduced(termVector, epsylon_cota2_2);
+                }catch (Exception e){
+                    LOG.warn(""+nullShapes.getAndIncrement()+ " empty shapes from DocTopicUtils");
+                    return "";
+                }
+            }
+
+            @Override
+            public List<Double> shapeFrom(String topicRepresentation) {
+                List<Double> vector = DocTopicsUtil.getVectorFromString(topicRepresentation, precision, numTopics, epsylon);
+                return vector;
+            }
+
+            @Override
+            public String id() {
+                return testName.getMethodName();
+            }
+
+            @Override
+            public Similarity similarityMetric() {
+                return new BooleanSimilarity();
+            }
+
+            @Override
+            public Double similarityScore(List<Double> v1, List<Double> v2) {
+
+                List<Double> v1Norm = v1.stream().map(v -> v * precision).collect(Collectors.toList());
+                List<Double> v2Norm = v2.stream().map(v -> v * precision).collect(Collectors.toList());
+
+                float distance = MetricsUtils.jsd_tuning2(v1Norm, v2Norm, epsylon, epsylon_2_2sqrt_short, epsylon_cota2_2);
+
+                double similarity = 0.0f;
+
+
+                if(distance < epsylon){
+                    // Normalize distance
+                    double distanceNormalized =  0.5d*(epsylon - distance)/epsylon + 0.5d;
+                    similarity = distanceNormalized;
+                }
+                return similarity;
             }
         });
     }

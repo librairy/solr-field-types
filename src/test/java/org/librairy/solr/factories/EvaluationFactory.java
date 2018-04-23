@@ -12,7 +12,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 import org.librairy.solr.analyzer.TopicAnalyzer;
-import org.librairy.solr.evaluations.model.RepresentationalAlgorithm;
+import org.librairy.solr.model.RepresentationalAlgorithm;
 import org.librairy.solr.metric.JSDSimilarity;
 import org.librairy.solr.model.Document;
 import org.librairy.solr.model.Evaluation;
